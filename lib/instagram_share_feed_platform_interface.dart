@@ -24,8 +24,9 @@ abstract class InstagramShareFeedPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<bool> shareToInstagramFeed(
+  Future<bool?> shareToInstagramFeed(
       {required String mediaPath, required MediaType mediaType}) {
-    throw UnimplementedError('platformVersion() has not been implemented.');
+    throw UnimplementedError(
+        'shareToInstagramFeed() has not been implemented.');
   }
 }
