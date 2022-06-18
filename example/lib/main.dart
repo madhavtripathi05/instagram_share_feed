@@ -1,7 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_share_feed/instagram_share_feed.dart';
 import 'package:instagram_share_feed/instagram_share_feed_method_channel.dart';
@@ -23,8 +22,17 @@ class _MyAppState extends State<MyApp> {
     if (image == null) {
       throw Exception('Empty image returned');
     }
-    InstagramShareFeed.shareToInstagramFeed(
-        mediaPath: image.path, mediaType: MediaType.image);
+    try {
+      final success = await InstagramShareFeed.shareToInstagramFeed(
+          mediaPath: image.path, mediaType: MediaType.image);
+      if (kDebugMode) {
+        print(success);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
   }
 
   @override
@@ -36,7 +44,8 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Center(
           child: MaterialButton(
-              onPressed: shareToInstagramFeed, child: Text('Pick & share')),
+              onPressed: shareToInstagramFeed,
+              child: const Text('Pick & share')),
         ),
       ),
     );

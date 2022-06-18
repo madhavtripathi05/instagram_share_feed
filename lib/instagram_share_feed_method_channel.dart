@@ -10,11 +10,11 @@ class MethodChannelInstagramShareFeed extends InstagramShareFeedPlatform {
   final methodChannel = const MethodChannel('instagram_share_feed');
 
   @override
-  Future<bool> shareToInstagramFeed(
+  Future<bool?> shareToInstagramFeed(
       {required String mediaPath, required MediaType mediaType}) async {
     final success =
         await methodChannel.invokeMethod<bool>('shareToInstagramFeed', {
-      'mediaType': '${mediaType.name}/*',
+      'mediaType': mediaType.name,
       'mediaPath': mediaPath,
     });
     return success ?? false;
