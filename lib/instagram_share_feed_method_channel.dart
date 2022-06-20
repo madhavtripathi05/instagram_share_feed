@@ -19,6 +19,20 @@ class MethodChannelInstagramShareFeed extends InstagramShareFeedPlatform {
     });
     return success ?? false;
   }
+
+  @override
+  Future<bool?> shareToTwitter({
+    required String mediaPath,
+    required MediaType mediaType,
+    required String contentText,
+  }) async {
+    final success = await methodChannel.invokeMethod<bool>('shareToTwitter', {
+      'mediaType': mediaType.name,
+      'mediaPath': mediaPath,
+      'contentText': contentText,
+    });
+    return success ?? false;
+  }
 }
 
 enum MediaType {

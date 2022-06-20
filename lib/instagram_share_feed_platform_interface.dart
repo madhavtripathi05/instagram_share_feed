@@ -29,4 +29,12 @@ abstract class InstagramShareFeedPlatform extends PlatformInterface {
     throw UnimplementedError(
         'shareToInstagramFeed() has not been implemented.');
   }
+
+  Future<bool?> shareToTwitter({
+    required String mediaPath,
+    required MediaType mediaType,
+    required String contentText,
+  }) {
+    throw UnimplementedError('shareToTwitter() has not been implemented.');
+  }
 }

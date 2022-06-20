@@ -35,6 +35,27 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  void shareToTwitter() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image == null) {
+      throw Exception('Empty image returned');
+    }
+    try {
+      final success = await InstagramShareFeed.shareToTwitter(
+        mediaPath: image.path,
+        mediaType: MediaType.image,
+        contentText: "Sharing it with Twitter",
+      );
+      if (kDebugMode) {
+        print(success);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -43,9 +64,18 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: MaterialButton(
-              onPressed: shareToInstagramFeed,
-              child: const Text('Pick & share')),
+          child: Column(
+            children: [
+              MaterialButton(
+                onPressed: shareToInstagramFeed,
+                child: const Text('Pick & share on Instagram'),
+              ),
+              MaterialButton(
+                onPressed: shareToTwitter,
+                child: const Text('Pick & share on Twitter'),
+              ),
+            ],
+          ),
         ),
       ),
     );

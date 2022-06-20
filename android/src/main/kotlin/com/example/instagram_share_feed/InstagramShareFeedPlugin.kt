@@ -2,6 +2,7 @@ package com.example.instagram_share_feed
 
 import android.app.Activity
 import android.content.*
+import android.util.Log
 import androidx.annotation.NonNull
 import androidx.core.content.FileProvider
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -23,6 +24,8 @@ class InstagramShareFeedPlugin : FlutterPlugin, MethodCallHandler, ActivityAware
     private lateinit var channel: MethodChannel
     private var activity: Activity? = null
     private val instagramPackageIdentifier = "com.instagram.android"
+    private val twitterPackageIdentifier = "com.twitter.android"
+
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "instagram_share_feed")
@@ -30,12 +33,23 @@ class InstagramShareFeedPlugin : FlutterPlugin, MethodCallHandler, ActivityAware
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-        if (call.method == "shareToInstagramFeed") {
-            val mediaType = call.argument<String>("mediaType")
-            val mediaPath = call.argument<String>("mediaPath")
-            shareToInstagram(mediaPath!!, mediaType!!, result)
-        } else {
-            result.notImplemented()
+        when (call.method) {
+            "shareToInstagramFeed" -> {
+                val mediaType = call.argument<String>("mediaType")
+                val mediaPath = call.argument<String>("mediaPath")
+                shareToInstagram(mediaPath!!, mediaType!!, result)
+            }
+            "shareToTwitter" -> {
+                val mediaType = call.argument<String>("mediaType")
+                val mediaPath = call.argument<String>("mediaPath")
+                val contentText = call.argument<String>("contentText")
+                Log.i("share to twitter before call", "$mediaPath $mediaType $contentText")
+
+                shareToTwitter(mediaPath!!, mediaType!!, contentText!!, result);
+            }
+            else -> {
+                result.notImplemented()
+            }
         }
     }
 
@@ -61,6 +75,29 @@ class InstagramShareFeedPlugin : FlutterPlugin, MethodCallHandler, ActivityAware
             e.printStackTrace()
             result.error("-1", e.message, e.toString())
         }
+    }
+
+    private fun shareToTwitter(mediaPath: String, mediaType: String,contentText: String, result: Result ) {
+        Log.i("share to twitter", "$mediaPath $mediaType $contentText")
+        val file = File(mediaPath)
+        val fileUri = FileProvider.getUriForFile(
+            activity!!,
+            activity!!.applicationContext.packageName + ".com.example.instagram_share_feed",
+            file
+        )
+         val intent = Intent(Intent.ACTION_SEND)
+         intent.putExtra(Intent.EXTRA_TEXT, contentText)
+         intent.type = "text/plain"
+         intent.putExtra(Intent.EXTRA_STREAM, fileUri)
+         intent.type = "image/*"
+         intent.setPackage(twitterPackageIdentifier)
+         try {
+             activity!!.startActivity(intent)
+             result.success(true)
+         } catch (e: Exception) {
+             e.printStackTrace()
+             result.error("-1", e.message, e.toString())
+         }
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {

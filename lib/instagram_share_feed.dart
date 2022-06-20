@@ -6,4 +6,16 @@ class InstagramShareFeed {
     return MethodChannelInstagramShareFeed()
         .shareToInstagramFeed(mediaPath: mediaPath, mediaType: mediaType);
   }
+
+  static Future<bool?> shareToTwitter({
+    required String mediaPath,
+    required MediaType mediaType,
+    required String contentText,
+  }) {
+    return MethodChannelInstagramShareFeed().shareToTwitter(
+      mediaPath: mediaPath,
+      mediaType: mediaType,
+      contentText: contentText,
+    );
+  }
 }
